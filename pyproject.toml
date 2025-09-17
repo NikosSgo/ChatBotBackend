@@ -1,0 +1,11 @@
+[project]
+name = "chatbotbackend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "fastapi[standard,standart]>=0.116.2",
+  "pydantic-settings>=2.10.1",
+  "yandex-cloud-ml-sdk>=0.15.0",
+]
