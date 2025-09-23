@@ -1,0 +1,72 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Create env file from secrets
+      run: |
+        cd ~/projects/android/ChatBotBackend
+        cat > .env << EOF
+        DB_HOST=$DB_HOST
+        DB_PORT=$DB_PORT
+        DB_NAME=$DB_NAME
+        DB_USER=$DB_USER
+        DB_PASSWORD=$DB_PASSWORD
+        DB_POOL_SIZE=$DB_POOL_SIZE
+        DB_MAX_OVERFLOW=$DB_MAX_OVERFLOW
+        DB_ECHO=$DB_ECHO
+        DB_ECHO_POOL=$DB_ECHO_POOL
+        DB_URL=$DB_URL
+        API_TITLE=$API_TITLE
+        API_VERSION=$API_VERSION
+        API_DESCRIPTION=$API_DESCRIPTION
+        API_DEBUG=$API_DEBUG
+        API_ALLOWED_HOSTS=$API_ALLOWED_HOSTS
+        ACCESS_TOKEN_LIFETIME_SECONDS=$ACCESS_TOKEN_LIFETIME_SECONDS
+        ACCESS_TOKEN_RESET_PASSWORD_TOKEN_SECRET=$ACCESS_TOKEN_RESET_PASSWORD_TOKEN_SECRET
+        ACCESS_TOKEN_VERIFICATION_TOKEN_SECRET=$ACCESS_TOKEN_VERIFICATION_TOKEN_SECRET
+        ENVIRONMENT=$ENVIRONMENT
+        SECRET_KEY=$SECRET_KEY
+        YANDEX_API_KEY=$YANDEX_API_KEY
+        YANDEX_FOLDER_ID=$YANDEX_FOLDER_ID
+        EOF
+      env:
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_POOL_SIZE: ${{ secrets.DB_POOL_SIZE }}
+        DB_MAX_OVERFLOW: ${{ secrets.DB_MAX_OVERFLOW }}
+        DB_ECHO: ${{ secrets.DB_ECHO }}
+        DB_ECHO_POOL: ${{ secrets.DB_ECHO_POOL }}
+        DB_URL: ${{ secrets.DB_URL }}
+        API_TITLE: ${{ secrets.API_TITLE }}
+        API_VERSION: ${{ secrets.API_VERSION }}
+        API_DESCRIPTION: ${{ secrets.API_DESCRIPTION }}
+        API_DEBUG: ${{ secrets.API_DEBUG }}
+        API_ALLOWED_HOSTS: ${{ secrets.API_ALLOWED_HOSTS }}
+        ACCESS_TOKEN_LIFETIME_SECONDS: ${{ secrets.ACCESS_TOKEN_LIFETIME_SECONDS }}
+        ACCESS_TOKEN_RESET_PASSWORD_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_RESET_PASSWORD_TOKEN_SECRET }}
+        ACCESS_TOKEN_VERIFICATION_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_VERIFICATION_TOKEN_SECRET }}
+        ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        YANDEX_API_KEY: ${{ secrets.YANDEX_API_KEY }}
+        YANDEX_FOLDER_ID: ${{ secrets.YANDEX_FOLDER_ID }}
+        
+    - name: Deploy application
+      run: |
+        cd ~/projects/android/ChatBotBackend
+        git pull origin main
+        docker compose down
+        docker compose up --build -d
