@@ -5,7 +5,15 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+  "alembic>=1.16.5",
+  "asyncpg>=0.30.0",
+  "fastapi-users[sqlalchemy]>=14.0.1",
   "fastapi[standard,standart]>=0.116.2",
+  "passlib[bcrypt]>=1.7.4",
+  "psycopg2-binary>=2.9.10",
   "pydantic-settings>=2.10.1",
+  "python-jose[cryptography]>=3.5.0",
+  "python-multipart>=0.0.20",
+  "sqlalchemy[asyncio]>=2.0.43",
   "yandex-cloud-ml-sdk>=0.15.0",
 ]
