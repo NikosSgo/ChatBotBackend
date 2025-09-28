@@ -1,19 +1,20 @@
+import enum
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import Optional
 from enum import Enum
 
 
-class MessageStatus(str, Enum):
-    SENDING = "sending"
-    SENT = "sent"
-    ERROR = "error"
-    DELIVERED = "delivered"
+class MessageStatus(Enum):
+    SENDING = "SENDING"
+    SENT = "SENT"
+    ERROR = "ERROR"
+    DELIVERED = "DELIVERED"
 
 
-class MessageSender(str, Enum):
-    BOT = "bot"
-    USER = "user"
+class MessageSender(Enum):
+    BOT = "BOT"
+    USER = "USER"
 
 
 class MessageBase(BaseModel):
