@@ -4,7 +4,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 from app.crud.CRUDBase import CRUDBase
 from app.db.models import Message, Chat
-from app.schemas.message import MessageCreate, MessageUpdate
+from app.schemas.message import (
+    MessageCreate,
+    MessageSender,
+    MessageStatus,
+    MessageUpdate,
+)
 
 
 class CRUDMessage(CRUDBase[Message, MessageCreate, MessageUpdate]):
@@ -61,18 +66,25 @@ class CRUDMessage(CRUDBase[Message, MessageCreate, MessageUpdate]):
         self, db: AsyncSession, *, obj_in: MessageCreate, user_id: int
     ) -> Optional[Message]:
         """Создать сообщение с проверкой, что чат принадлежит пользователю (асинхронно)"""
-        # Проверяем, что чат существует и принадлежит пользователю
         chat_result = await db.execute(
-            select(Chat).filter(
-                Chat.id == obj_in.chat_id, Chat.user_id == user_id)
+            select(Chat).filter(Chat.id == obj_in.chat_id, Chat.user_id == user_id)
         )
         chat = chat_result.scalar_one_or_none()
 
         if not chat:
             return None
 
-        # Создаем сообщение
-        return await self.create(db, obj_in=obj_in)
+        db_obj = Message(
+            text=obj_in.text,
+            chat_id=obj_in.chat_id,
+            status=MessageStatus.DELIVERED,
+            sender=MessageSender.USER,
+        )
+
+        db.add(db_obj)
+        await db.commit()
+        await db.refresh(db_obj)
+        return db_obj
 
     async def update_status(
         self, db: AsyncSession, *, message_id: int, status: str

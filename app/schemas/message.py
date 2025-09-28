@@ -18,8 +18,6 @@ class MessageSender(str, Enum):
 
 class MessageBase(BaseModel):
     text: str
-    status: MessageStatus = MessageStatus.SENDING
-    sender: MessageSender
     chat_id: int
 
 
@@ -30,11 +28,14 @@ class MessageCreate(MessageBase):
 class MessageUpdate(BaseModel):
     text: Optional[str] = None
     status: Optional[MessageStatus] = None
-    sender: Optional[MessageSender] = None
 
 
-class MessageInDBBase(MessageBase):
+class MessageInDBBase(BaseModel):
     id: int
+    text: str
+    status: MessageStatus
+    sender: MessageSender
+    chat_id: int
     created_at: datetime
     updated_at: datetime
 
