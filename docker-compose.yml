@@ -3,12 +3,6 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: ./
-    environment:
-      YANDEX_API_KEY: ${YANDEX_API_KEY}
-      YANDEX_FOLDER_ID: ${YANDEX_FOLDER_ID}
-      DATABASE_URL: ${DB_URL}
-      RESET_PASSWORD_TOKEN_SECRET: ${ACCESS_TOKEN_RESET_PASSWORD_TOKEN_SECRET}
-      VERIFICATION_TOKEN_SECRET: ${ACCESS_TOKEN_VERIFICATION_TOKEN_SECRET}
     ports:
       - "8000:8000"
     depends_on:

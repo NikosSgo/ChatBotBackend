@@ -4,17 +4,7 @@ from datetime import datetime
 from typing import Optional
 from enum import Enum
 
-
-class MessageStatus(Enum):
-    SENDING = "SENDING"
-    SENT = "SENT"
-    ERROR = "ERROR"
-    DELIVERED = "DELIVERED"
-
-
-class MessageSender(Enum):
-    BOT = "BOT"
-    USER = "USER"
+from app.db.models.message import MessageSender, MessageStatus
 
 
 class MessageBase(BaseModel):

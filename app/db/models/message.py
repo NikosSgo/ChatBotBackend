@@ -10,15 +10,15 @@ if TYPE_CHECKING:
 
 
 class MessageStatus(enum.Enum):
-    SENDING = "sending"
-    SENT = "sent"
-    ERROR = "error"
-    DELIVERED = "delivered"
+    SENDING = "SENDING"
+    SENT = "SENT"
+    ERROR = "ERROR"
+    DELIVERED = "DELIVERED"
 
 
 class MessageSender(enum.Enum):
-    BOT = "bot"
-    USER = "user"
+    BOT = "BOT"
+    USER = "USER"
 
 
 class Message(Base, IDMixin, TimestampMixin):

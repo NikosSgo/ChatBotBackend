@@ -35,6 +35,13 @@ class APISettings(BaseSettings):
     allowed_hosts: List[str] = Field(default=["*"])
 
 
+class GPTSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix="GPT_")
+
+    folder_id: str = Field(default="")
+    api_key: str = Field(default="")
+
+
 class AccessTokenSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="ACCESS_TOKEN_")
 
@@ -50,6 +57,7 @@ class Settings(BaseSettings):
 
     db: DatabaseSettings = DatabaseSettings()
     api: APISettings = APISettings()
+    gpt: GPTSettings = GPTSettings()
     access_token: AccessTokenSettings = AccessTokenSettings()
     environment: str = Field(default="development")
     secret_key: str = Field(default="your-secret-key-here")
