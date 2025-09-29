@@ -8,7 +8,7 @@ from app.schemas.user import (
 
 users_router = APIRouter(
     prefix="/users",
-    tags=["Users"],
+    tags=["users"],
 )
 
 users_router.include_router(
