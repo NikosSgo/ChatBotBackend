@@ -10,6 +10,8 @@ from app.schemas.message import (
 )
 from app.crud.CRUDMessage import crud_message
 from app.utils.yandex_gpt.YandexAgent import YandexAgent
+from app.crud.CRUDChat import crud_chat
+from app.schemas.chat import ChatUpdate
 
 
 class MessageService:
@@ -47,6 +49,9 @@ class MessageService:
 
         if not user_message:
             return None
+
+        # Try update chat title based on user's new message (best-effort)
+        await self._update_chat_title(db, chat_id=message_create.chat_id, user_text=message_create.text)
 
         await self._generate_ai_response(
             db, message_create.text, message_create.chat_id
@@ -119,6 +124,31 @@ class MessageService:
 
     async def get_message_count(self, db: AsyncSession, chat_id: int) -> int:
         return await crud_message.get_count_by_chat_id(db, chat_id=chat_id)
+
+    async def _update_chat_title(self, db: AsyncSession, chat_id: int, user_text: str) -> None:
+        """Generate a concise chat title from the user's message and update the chat.
+
+        Best-effort: swallow errors to not block message creation.
+        """
+        try:
+            prompt = (
+                "Сформулируй очень короткое название чата (до 30 символов), "
+                "сохраняющее смысл сообщения. Без кавычек, без точки в конце.\n\n"
+                f"Сообщение: {user_text}"
+            )
+            raw_title = await self.agent.async_call(prompt)
+            if not raw_title:
+                return
+            title = raw_title.strip().strip('"\'')
+            # Enforce max length while keeping readability
+            max_len = 30
+            if len(title) > max_len:
+                title = title[:max_len].rstrip()
+
+            await crud_chat.update(db, db_obj=await crud_chat.get(db, chat_id), obj_in=ChatUpdate(title=title))
+        except Exception as e:
+            # Best-effort: log and continue
+            print(f"Error updating chat title for chat {chat_id}: {e}")
 
 
 message_service = MessageService()
